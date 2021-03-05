@@ -1,0 +1,22 @@
+{
+	"include": ["src", "types", "test"],
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "ES2019",
+		"lib": ["dom", "esnext"],
+		"importHelpers": true,
+		"rootDir": ".",
+		"strict": true,
+		"noImplicitAny": false,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": true,
+		"moduleResolution": "node",
+		"jsx": "react",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true
+	}
+}
