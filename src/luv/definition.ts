@@ -13,8 +13,9 @@ import convertLuvToXyz from './convertLuvToXyz';
 import convertLuvToRgb from './convertLuvToRgb';
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'luv',
 
 	output: {
@@ -34,11 +35,12 @@ const definition = {
 		u: [-84.86, 174.87],
 		v: [-125.744, 87.165]
 	},
+	difference: {},
 
 	interpolate: {
-		l: interpolatorLinear,
-		u: interpolatorLinear,
-		v: interpolatorLinear,
+		l: { use: interpolatorLinear },
+		u: { use: interpolatorLinear },
+		v: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	}
 };

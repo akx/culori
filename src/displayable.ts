@@ -1,8 +1,9 @@
 import converter from './converter';
+import { Color, RGBColor } from './types';
 
-let rgb = converter('rgb');
+let rgb = converter<RGBColor>('rgb');
 
-const displayable = color => {
+const displayable = (color: Color): boolean => {
 	let c = rgb(color);
 	return (
 		c !== undefined &&

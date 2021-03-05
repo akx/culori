@@ -7,13 +7,15 @@
 		* https://www.adobe.com/digitalimag/pdfs/AdobeRGB1998.pdf
 */
 
+import { RGBAValues, XYZ65Color } from '../types';
+
 const linearize = v => Math.pow(Math.abs(v), 563 / 256) * Math.sign(v);
 
-const convertA98ToXyz65 = a98 => {
-	let r = linearize(a98.r);
-	let g = linearize(a98.g);
-	let b = linearize(a98.b);
-	let res = {
+const convertA98ToXyz65 = ({ r, g, b, alpha }: RGBAValues): XYZ65Color => {
+	r = linearize(r);
+	g = linearize(g);
+	b = linearize(b);
+	let res: XYZ65Color = {
 		mode: 'xyz65',
 		x:
 			0.5766690429101305 * r +
@@ -28,8 +30,8 @@ const convertA98ToXyz65 = a98 => {
 			0.07068885253582723 * g +
 			0.9913375368376388 * b
 	};
-	if (a98.alpha !== undefined) {
-		res.alpha = a98.alpha;
+	if (alpha !== undefined) {
+		res.alpha = alpha;
 	}
 	return res;
 };

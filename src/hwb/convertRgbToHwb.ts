@@ -9,16 +9,16 @@
  */
 
 import convertRgbToHsv from '../hsv/convertRgbToHsv';
+import { HWBColor, RGBColor } from '../types';
 
-export default function convertRgbToHwb(rgba) {
-	let hsv = convertRgbToHsv(rgba);
-	if (hsv === undefined) return undefined;
-	let res = {
+export default function convertRgbToHwb(rgba: RGBColor): HWBColor {
+	let { alpha, h, s, v } = convertRgbToHsv(rgba);
+	let res: HWBColor = {
 		mode: 'hwb',
-		w: (1 - hsv.s) * hsv.v,
-		b: 1 - hsv.v
+		w: (1 - s) * v,
+		b: 1 - v,
+		h
 	};
-	if (hsv.h !== undefined) res.h = hsv.h;
-	if (hsv.alpha !== undefined) res.alpha = hsv.alpha;
+	if (alpha !== undefined) res.alpha = alpha;
 	return res;
 }

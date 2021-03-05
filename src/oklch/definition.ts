@@ -3,8 +3,9 @@ import convertLabToLch from '../lch/convertLabToLch';
 import convertLchToLab from '../lch/convertLchToLab';
 import convertOklabToRgb from '../oklab/convertOklabToRgb';
 import convertRgbToOklab from '../oklab/convertRgbToOklab';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...lch,
 	mode: 'oklch',
 	alias: [],

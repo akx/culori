@@ -1,4 +1,5 @@
 import { Xn, Yn, Zn, k, e } from '../xyz/constants';
+import { LUVColor, XYZColor } from '../types';
 
 export const u_fn = (x, y, z) => (4 * x) / (x + 15 * y + 3 * z);
 export const v_fn = (x, y, z) => (9 * y) / (x + 15 * y + 3 * z);
@@ -8,7 +9,7 @@ export const vn = v_fn(Xn, Yn, Zn);
 
 const l_fn = value => (value <= e ? k * value : 116 * Math.cbrt(value) - 16);
 
-const convertXyzToLuv = ({ x, y, z, alpha }) => {
+const convertXyzToLuv = ({ x, y, z, alpha }: XYZColor) => {
 	let l = l_fn(y / Yn);
 	let u = u_fn(x, y, z);
 	let v = v_fn(x, y, z);
@@ -21,7 +22,7 @@ const convertXyzToLuv = ({ x, y, z, alpha }) => {
 		v = 13 * l * (v - vn);
 	}
 
-	let res = {
+	let res: LUVColor = {
 		mode: 'luv',
 		l,
 		u,

@@ -1,10 +1,11 @@
 import {
-	interpolatorSplineBasisClosed,
-	interpolatorSplineBasis
+	interpolatorSplineBasis,
+	interpolatorSplineBasisClosed
 } from './splineBasis';
 import gamma from '../easing/gamma';
+import { identity } from '../utils';
 
-const solve = v => {
+const solve = (v: readonly number[]): number[] => {
 	let i;
 	let n = v.length - 1;
 	let c = new Array(n);
@@ -36,16 +37,21 @@ const interpolatorSplineNatural = arr => interpolatorSplineBasis(solve(arr));
 const interpolatorSplineNaturalClosed = arr =>
 	interpolatorSplineBasisClosed(solve(arr));
 
-const interpolateSplineNatural = (fixup, type = 'default', γ = 1) => arr => {
+function interpolateSplineNatural(fixup, type = 'default', γ = 1) {
+	fixup = fixup || identity;
 	let ease = gamma(γ);
-	if (type === 'default') {
-		return t =>
-			interpolatorSplineNatural((fixup || (v => v))(arr))(ease(t));
-	} else if (type === 'closed') {
-		return t =>
-			interpolatorSplineNaturalClosed((fixup || (v => v))(arr))(ease(t));
-	}
-};
+	return (arr: readonly number[]) => {
+		switch (type) {
+			case 'default':
+				return t => interpolatorSplineNatural(fixup(arr))(ease(t));
+			case 'closed':
+				return t =>
+					interpolatorSplineNaturalClosed(fixup(arr))(ease(t));
+			default:
+				throw new Error(`invalid type ${type}`);
+		}
+	};
+}
 
 export {
 	interpolateSplineNatural,

@@ -5,8 +5,9 @@ import convertXyzToLab from './convertXyzToLab';
 import parseLab from './parseLab';
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'lab',
 	alias: ['lab-d50'],
 
@@ -22,6 +23,8 @@ const definition = {
 
 	channels: ['l', 'a', 'b', 'alpha'],
 
+	difference: {},
+
 	ranges: {
 		l: [0, 100],
 		a: [-79.167, 93.408],
@@ -31,9 +34,9 @@ const definition = {
 	parsers: [parseLab],
 
 	interpolate: {
-		l: interpolatorLinear,
-		a: interpolatorLinear,
-		b: interpolatorLinear,
+		l: { use: interpolatorLinear },
+		a: { use: interpolatorLinear },
+		b: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	}
 };

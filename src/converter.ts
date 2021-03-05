@@ -1,24 +1,29 @@
 import { converters } from './modes';
 import prepare from './_prepare';
+import { Color, ColorConverter } from './types';
 
-const converter = (target_mode = 'rgb') => color =>
-	(color = prepare(color, target_mode)) !== undefined
-		? // if the color's mode corresponds to our target mode
-		  color.mode === target_mode
-			? // then just return the color
-			  color
-			: // otherwise check to see if we have a dedicated
-			// converter for the target mode
-			converters[color.mode][target_mode]
-			? // and return its result...
-			  converters[color.mode][target_mode](color)
-			: // ...otherwise pass through RGB as an intermediary step.
-			// if the target mode is RGB...
-			target_mode === 'rgb'
-			? // just return the RGB
-			  converters[color.mode].rgb(color)
-			: // otherwise convert color.mode -> RGB -> target_mode
-			  converters.rgb[target_mode](converters[color.mode].rgb(color))
-		: undefined;
+function converter<ColorType extends Color = Color>(
+	target_mode = 'rgb'
+): ColorConverter<ColorType> {
+	return function (color: Color | string): ColorType | undefined {
+		const preparedColor = prepare(color, target_mode);
+		if (preparedColor === undefined) {
+			return undefined;
+		}
+		let { mode: source_mode } = preparedColor;
+		if (source_mode === target_mode) {
+			return preparedColor as ColorType;
+		}
+		if (converters[source_mode][target_mode]) {
+			return converters[source_mode][target_mode](preparedColor);
+		}
+		if (target_mode === 'rgb') {
+			return converters[source_mode].rgb(preparedColor);
+		}
+		return converters['rgb'][target_mode](
+			converters[source_mode].rgb(preparedColor)
+		);
+	};
+}
 
 export default converter;

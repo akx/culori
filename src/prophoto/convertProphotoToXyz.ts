@@ -6,13 +6,15 @@
 		* http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 */
 
+import { RGBAValues, XYZ65Color } from '../types';
+
 const linearize = v => (v >= 16 / 512 ? Math.pow(v, 1.8) : v / 16);
 
-const convertProphotoToXyz = prophoto => {
+const convertProphotoToXyz = (prophoto: RGBAValues): XYZ65Color => {
 	let r = linearize(prophoto.r);
 	let g = linearize(prophoto.g);
 	let b = linearize(prophoto.b);
-	let res = {
+	let res: XYZ65Color = {
 		mode: 'xyz65',
 		x:
 			0.7977604896723027 * r +

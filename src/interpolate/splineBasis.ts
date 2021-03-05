@@ -1,4 +1,6 @@
 import gamma from '../easing/gamma';
+import { SimpleInterpolator } from './utils';
+import { identity } from '../utils';
 
 /*
 	Basis spline
@@ -22,7 +24,13 @@ import gamma from '../easing/gamma';
 
  */
 
-const bspline = (Vim2, Vim1, Vi, Vip1, t) => {
+const bspline = (
+	Vim2: number,
+	Vim1: number,
+	Vi: number,
+	Vip1: number,
+	t: number
+) => {
 	let t2 = t * t;
 	let t3 = t2 * t;
 	return (
@@ -34,39 +42,48 @@ const bspline = (Vim2, Vim1, Vi, Vip1, t) => {
 	);
 };
 
-const interpolatorSplineBasis = arr => t => {
+function interpolatorSplineBasis(arr: number[]): SimpleInterpolator {
 	let classes = arr.length - 1;
-	let i = t === 1 ? classes - 1 : Math.floor(t * classes);
-	return bspline(
-		i > 0 ? arr[i - 1] : 2 * arr[i] - arr[i + 1],
-		arr[i],
-		arr[i + 1],
-		i < classes - 1 ? arr[i + 2] : 2 * arr[i + 1] - arr[i],
-		(t - i / classes) * classes
-	);
-};
+	return (t: number) => {
+		let i = t === 1 ? classes - 1 : Math.floor(t * classes);
+		return bspline(
+			i > 0 ? arr[i - 1] : 2 * arr[i] - arr[i + 1],
+			arr[i],
+			arr[i + 1],
+			i < classes - 1 ? arr[i + 2] : 2 * arr[i + 1] - arr[i],
+			(t - i / classes) * classes
+		);
+	};
+}
 
-const interpolatorSplineBasisClosed = arr => t => {
+function interpolatorSplineBasisClosed(arr: number[]): SimpleInterpolator {
 	let classes = arr.length - 1;
-	let i = t === 1 ? classes - 1 : Math.floor(t * classes);
-	return bspline(
-		arr[(i - 1 + arr.length) % arr.length],
-		arr[i],
-		arr[(i + 1) % arr.length],
-		arr[(i + 2) % arr.length],
-		(t - i / classes) * classes
-	);
-};
+	return (t: number) => {
+		let i = t === 1 ? classes - 1 : Math.floor(t * classes);
+		return bspline(
+			arr[(i - 1 + arr.length) % arr.length],
+			arr[i],
+			arr[(i + 1) % arr.length],
+			arr[(i + 2) % arr.length],
+			(t - i / classes) * classes
+		);
+	};
+}
 
-const interpolateSplineBasis = (fixup, type = 'default', γ = 1) => arr => {
-	let ease = gamma(γ);
-	if (type === 'default') {
-		return t => interpolatorSplineBasis((fixup || (v => v))(arr))(ease(t));
-	} else if (type === 'closed') {
-		return t =>
-			interpolatorSplineBasisClosed((fixup || (v => v))(arr))(ease(t));
-	}
-};
+function interpolateSplineBasis(fixup, type = 'default', γ = 1) {
+	fixup = fixup || identity;
+	const ease = gamma(γ);
+	return arr => {
+		switch (type) {
+			case 'default':
+				return t => interpolatorSplineBasis(fixup(arr))(ease(t));
+			case 'closed':
+				return t => interpolatorSplineBasisClosed(fixup(arr))(ease(t));
+			default:
+				throw new Error(`invalid type ${type}`);
+		}
+	};
+}
 
 export {
 	interpolateSplineBasis,

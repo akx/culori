@@ -5,8 +5,9 @@ import convertRec2020ToXyz65 from './convertRec2020ToXyz65';
 
 import convertRgbToXyz65 from '../xyz65/convertRgbToXyz65';
 import convertXyz65ToRgb from '../xyz65/convertXyz65ToRgb';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...rgb,
 	mode: 'rec2020',
 

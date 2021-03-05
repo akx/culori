@@ -5,8 +5,9 @@ import { fixupAlpha } from '../fixup/alpha';
 import { interpolatorLinear } from '../interpolate/linear';
 import { differenceHueSaturation } from '../difference';
 import { averageAngle } from '../average';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'hsi',
 
 	output: {
@@ -25,8 +26,8 @@ const definition = {
 
 	interpolate: {
 		h: { use: interpolatorLinear, fixup: fixupHueShorter },
-		s: interpolatorLinear,
-		i: interpolatorLinear,
+		s: { use: interpolatorLinear },
+		i: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	},
 

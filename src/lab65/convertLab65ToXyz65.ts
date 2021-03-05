@@ -1,13 +1,14 @@
 import { Xn, Yn, Zn, k, e } from '../xyz65/constants';
+import { XYZ65Color } from '../types';
 
 let fn = v => (Math.pow(v, 3) > e ? Math.pow(v, 3) : (116 * v - 16) / k);
 
-const convertLab65ToXyz65 = ({ l, a, b, alpha }) => {
+const convertLab65ToXyz65 = ({ l, a, b, alpha }): XYZ65Color => {
 	let fy = (l + 16) / 116;
 	let fx = a / 500 + fy;
 	let fz = fy - b / 200;
 
-	let res = {
+	let res: XYZ65Color = {
 		mode: 'xyz65',
 		x: fn(fx) * Xn,
 		y: fn(fy) * Yn,

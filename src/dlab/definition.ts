@@ -4,8 +4,9 @@ import convertLab65ToRgb from '../lab65/convertLab65ToRgb';
 import convertRgbToLab65 from '../lab65/convertRgbToLab65';
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'dlab',
 
 	output: {
@@ -26,10 +27,11 @@ const definition = {
 		b: [-40.47, 44.344]
 	},
 
+	difference: {},
 	interpolate: {
-		l: interpolatorLinear,
-		a: interpolatorLinear,
-		b: interpolatorLinear,
+		l: { use: interpolatorLinear },
+		a: { use: interpolatorLinear },
+		b: { use: interpolatorLinear },
 		alpha: {
 			use: interpolatorLinear,
 			fixup: fixupAlpha

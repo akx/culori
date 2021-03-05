@@ -1,10 +1,9 @@
 import { getModeDefinition } from './modes';
 import converter from './converter';
 import normalizeHue from './util/normalizeHue';
+import { Color, HCValues, HSValues, HueValue, LAB65Color } from './types';
 
-const isfn = o => typeof o === 'function';
-
-const differenceHueSaturation = (std, smp) => {
+const differenceHueSaturation = (std: HSValues, smp: HSValues): number => {
 	if (std.h === undefined || smp.h === undefined || !std.s || !smp.s) {
 		return 0;
 	}
@@ -14,7 +13,7 @@ const differenceHueSaturation = (std, smp) => {
 	return 2 * Math.sqrt(std.s * smp.s) * dH;
 };
 
-const differenceHueNaive = (std, smp) => {
+const differenceHueNaive = (std: HueValue, smp: HueValue): number => {
 	if (std.h === undefined || smp.h === undefined) {
 		return 0;
 	}
@@ -27,7 +26,7 @@ const differenceHueNaive = (std, smp) => {
 	return smp_h - std_h;
 };
 
-const differenceHueChroma = (std, smp) => {
+const differenceHueChroma = (std: HCValues, smp: HCValues): number => {
 	if (std.h === undefined || smp.h === undefined || !std.c || !smp.c) {
 		return 0;
 	}
@@ -42,9 +41,12 @@ const differenceEuclidean = (mode = 'rgb', weights = [1, 1, 1, 0]) => {
 	let channels = def.channels;
 	let diffs = def.difference;
 	let conv = converter(mode);
-	return (std, smp) => {
-		let ConvStd = conv(std);
-		let ConvSmp = conv(smp);
+	return (std: Color, smp: Color): number => {
+		const ConvStd = conv(std);
+		const ConvSmp = conv(smp);
+		if (!(ConvSmp && ConvStd)) {
+			throw new Error(`could not convert either color to ${mode}`);
+		}
 		return Math.sqrt(
 			channels.reduce((sum, k, idx) => {
 				let delta = diffs[k]
@@ -62,21 +64,19 @@ const differenceEuclidean = (mode = 'rgb', weights = [1, 1, 1, 0]) => {
 const differenceCie76 = () => differenceEuclidean('lab65');
 
 const differenceCie94 = (kL = 1, K1 = 0.045, K2 = 0.015) => {
-	let lab = converter('lab65');
+	let lab = converter<LAB65Color>('lab65');
 
-	return (std, smp) => {
-		let LabStd = lab(std);
-		let LabSmp = lab(smp);
+	return (std: Color, smp: Color): number => {
+		const LabStd = lab(std);
+		const LabSmp = lab(smp);
+		if (!(LabStd && LabSmp)) {
+			throw new Error(`could not convert either color to lab65`);
+		}
 
 		// Extract Lab values, and compute Chroma
-		let lStd = LabStd.l;
-		let aStd = LabStd.a;
-		let bStd = LabStd.b;
+		const { l: lStd, a: aStd, b: bStd } = LabStd;
 		let cStd = Math.sqrt(aStd * aStd + bStd * bStd);
-
-		let lSmp = LabSmp.l;
-		let aSmp = LabSmp.a;
-		let bSmp = LabSmp.b;
+		const { l: lSmp, a: aSmp, b: bSmp } = LabSmp;
 		let cSmp = Math.sqrt(aSmp * aSmp + bSmp * bSmp);
 
 		let dL2 = Math.pow(lStd - lSmp, 2);
@@ -99,19 +99,16 @@ const differenceCie94 = (kL = 1, K1 = 0.045, K2 = 0.015) => {
  */
 
 const differenceCiede2000 = (Kl = 1, Kc = 1, Kh = 1) => {
-	let lab = converter('lab65');
-	return (std, smp) => {
-		let LabStd = lab(std);
-		let LabSmp = lab(smp);
-
-		let lStd = LabStd.l;
-		let aStd = LabStd.a;
-		let bStd = LabStd.b;
+	let lab = converter<LAB65Color>('lab65');
+	return (std: Color, smp: Color): number => {
+		const labStd = lab(std);
+		const labSmp = lab(smp);
+		if (!(labStd && labSmp)) {
+			throw new Error(`could not convert either color to lab65`);
+		}
+		const { a: aStd, b: bStd, l: lStd } = labStd;
+		const { a: aSmp, b: bSmp, l: lSmp } = labSmp;
 		let cStd = Math.sqrt(aStd * aStd + bStd * bStd);
-
-		let lSmp = LabSmp.l;
-		let aSmp = LabSmp.a;
-		let bSmp = LabSmp.b;
 		let cSmp = Math.sqrt(aSmp * aSmp + bSmp * bSmp);
 
 		let cAvg = (cStd + cSmp) / 2;
@@ -133,20 +130,20 @@ const differenceCiede2000 = (Kl = 1, Kc = 1, Kh = 1) => {
 			Math.abs(apStd) + Math.abs(bStd) === 0
 				? 0
 				: Math.atan2(bStd, apStd);
-		hpStd += (hpStd < 0) * 2 * Math.PI;
+		hpStd += (hpStd < 0 ? 1 : 0) * 2 * Math.PI;
 
 		let hpSmp =
 			Math.abs(apSmp) + Math.abs(bSmp) === 0
 				? 0
 				: Math.atan2(bSmp, apSmp);
-		hpSmp += (hpSmp < 0) * 2 * Math.PI;
+		hpSmp += (hpSmp < 0 ? 1 : 0) * 2 * Math.PI;
 
 		let dL = lSmp - lStd;
 		let dC = cpSmp - cpStd;
 
 		let dhp = cpStd * cpSmp === 0 ? 0 : hpSmp - hpStd;
-		dhp -= (dhp > Math.PI) * 2 * Math.PI;
-		dhp += (dhp < -Math.PI) * 2 * Math.PI;
+		dhp -= (dhp > Math.PI ? 1 : 0) * 2 * Math.PI;
+		dhp += (dhp < -Math.PI ? 1 : 0) * 2 * Math.PI;
 
 		let dH = 2 * Math.sqrt(cpStd * cpSmp) * Math.sin(dhp / 2);
 
@@ -158,8 +155,8 @@ const differenceCiede2000 = (Kl = 1, Kc = 1, Kh = 1) => {
 			hp = hpStd + hpSmp;
 		} else {
 			hp = (hpStd + hpSmp) / 2;
-			hp -= (Math.abs(hpStd - hpSmp) > Math.PI) * Math.PI;
-			hp += (hp < 0) * 2 * Math.PI;
+			hp -= (Math.abs(hpStd - hpSmp) > Math.PI ? 1 : 0) * Math.PI;
+			hp += (hp < 0 ? 1 : 0) * 2 * Math.PI;
 		}
 
 		let Lpm50 = Math.pow(Lp - 50, 2);
@@ -200,7 +197,7 @@ const differenceCiede2000 = (Kl = 1, Kc = 1, Kh = 1) => {
 		http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CMC.html
  */
 const differenceCmc = (l = 1, c = 1) => {
-	let lab = converter('lab65');
+	let lab = converter<LAB65Color>('lab65');
 
 	/*
 		Comparte two colors:
@@ -208,22 +205,21 @@ const differenceCmc = (l = 1, c = 1) => {
 		smp - sample (second) color
 	 */
 	return (std, smp) => {
+		const labStd = lab(std);
+		const labSmp = lab(smp);
+		if (!(labStd && labSmp)) {
+			throw new Error(`could not convert either color to lab65`);
+		}
 		// convert standard color to Lab
-		let LabStd = lab(std);
-		let lStd = LabStd.l;
-		let aStd = LabStd.a;
-		let bStd = LabStd.b;
+		let { a: aStd, b: bStd, l: lStd } = labStd;
 
 		// Obtain hue/chroma
 		let cStd = Math.sqrt(aStd * aStd + bStd * bStd);
 		let hStd = Math.atan2(bStd, aStd);
-		hStd = hStd + 2 * Math.PI * (hStd < 0);
+		hStd = hStd + 2 * Math.PI * (hStd < 0 ? 1 : 0);
 
 		// convert sample color to Lab, obtain LCh
-		let LabSmp = lab(smp);
-		let lSmp = LabSmp.l;
-		let aSmp = LabSmp.a;
-		let bSmp = LabSmp.b;
+		let { a: aSmp, b: bSmp, l: lSmp } = labSmp;
 
 		// Obtain chroma
 		let cSmp = Math.sqrt(aSmp * aSmp + bSmp * bSmp);

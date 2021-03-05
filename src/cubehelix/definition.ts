@@ -38,8 +38,9 @@ import convertRgbToCubehelix from './convertRgbToCubehelix';
 import convertCubehelixToRgb from './convertCubehelixToRgb';
 import { differenceHueSaturation } from '../difference';
 import { averageAngle } from '../average';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'cubehelix',
 	channels: ['h', 's', 'l', 'alpha'],
 
@@ -61,8 +62,8 @@ const definition = {
 			use: interpolatorLinear,
 			fixup: fixupHueShorter
 		},
-		s: interpolatorLinear,
-		l: interpolatorLinear,
+		s: { use: interpolatorLinear },
+		l: { use: interpolatorLinear },
 		alpha: {
 			use: interpolatorLinear,
 			fixup: fixupAlpha

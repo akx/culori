@@ -1,3 +1,5 @@
+import { JABColor, XYZ65Color } from '../types';
+
 const n = 0.1593017578125; // = 2610 / Math.pow(2, 14);
 const p = 134.03437499999998; // = 1.7 * 2523 / Math.pow(2, 5);
 const c1 = 0.8359375; // = 3424 / Math.pow(2, 12);
@@ -13,7 +15,7 @@ const pq = v => {
 // Convert to Absolute XYZ
 const abs = v => Math.max(v * 203, 0);
 
-const convertXyz65ToJab = ({ x, y, z, alpha }) => {
+const convertXyz65ToJab = ({ x, y, z, alpha }: XYZ65Color): JABColor => {
 	x = abs(x);
 	y = abs(y);
 	z = abs(z);
@@ -27,7 +29,7 @@ const convertXyz65ToJab = ({ x, y, z, alpha }) => {
 
 	let i = (l + m) / 2;
 
-	let res = {
+	let res: JABColor = {
 		mode: 'jab',
 		j: (0.44 * i) / (1 - 0.56 * i) - d0,
 		a: 3.524 * l - 4.066708 * m + 0.542708 * s,

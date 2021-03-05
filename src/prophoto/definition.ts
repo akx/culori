@@ -5,6 +5,7 @@ import convertProphotoToXyz from './convertProphotoToXyz';
 
 import convertXyzToRgb from '../xyz/convertXyzToRgb';
 import convertRgbToXyz from '../xyz/convertRgbToXyz';
+import { ColorSpaceDefinition } from '../types';
 
 /*
 	ProPhoto RGB Color space
@@ -13,7 +14,7 @@ import convertRgbToXyz from '../xyz/convertRgbToXyz';
 		* https://en.wikipedia.org/wiki/ProPhoto_RGB_color_space
  */
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...rgb,
 	mode: 'prophoto',
 	alias: ['prophoto-rgb'],

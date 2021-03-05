@@ -7,9 +7,11 @@
 		* http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html	
 */
 
-const convertXyz65ToXyz = xyz65 => {
+import { XYZ65Color, XYZColor } from '../types';
+
+const convertXyz65ToXyz = (xyz65: XYZ65Color): XYZColor => {
 	let { x, y, z, alpha } = xyz65;
-	let res = {
+	let res: XYZColor = {
 		mode: 'xyz',
 		x: 1.0478112 * x + 0.0228866 * y - 0.050127 * z,
 		y: 0.0295424 * x + 0.9904844 * y - 0.0170491 * z,

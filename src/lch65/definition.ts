@@ -3,8 +3,9 @@ import convertLchToLab from '../lch/convertLchToLab';
 import convertLab65ToRgb from '../lab65/convertLab65ToRgb';
 import convertRgbToLab65 from '../lab65/convertRgbToLab65';
 import lch from '../lch/definition';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...lch,
 	mode: 'lch65',
 	alias: ['lch-d65'],

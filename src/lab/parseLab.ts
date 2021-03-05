@@ -1,6 +1,7 @@
 import { lab } from '../util/regex';
+import { LABColor } from '../types';
 
-const parseLab = color => {
+const parseLab = (color: string): LABColor | undefined => {
 	if (typeof color !== 'string') {
 		return undefined;
 	}
@@ -10,7 +11,7 @@ const parseLab = color => {
 		return undefined;
 	}
 
-	let res = {
+	let res: LABColor = {
 		mode: 'lab',
 		l: +match[1],
 		a: +match[2],
@@ -18,7 +19,7 @@ const parseLab = color => {
 	};
 
 	if (match[4] !== undefined) {
-		res.alpha = match[4] / 100;
+		res.alpha = parseFloat(match[4]) / 100;
 	} else if (match[5] !== undefined) {
 		res.alpha = +match[5];
 	}

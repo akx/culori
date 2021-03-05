@@ -6,10 +6,17 @@
 		* http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 */
 
+import { ProphotoColor, XYZAValues } from '../types';
+
 const gamma = v => (v >= 1 / 512 ? Math.pow(v, 1 / 1.8) : 16 * v);
 
-const convertXyzToProphoto = ({ x, y, z, alpha }) => {
-	let res = {
+const convertXyzToProphoto = ({
+	x,
+	y,
+	z,
+	alpha
+}: XYZAValues): ProphotoColor => {
+	let res: ProphotoColor = {
 		mode: 'prophoto',
 		r: gamma(
 			x * 1.3457989731028281 -

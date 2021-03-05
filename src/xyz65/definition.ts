@@ -11,8 +11,9 @@ import convertXyzToXyz65 from './convertXyzToXyz65';
 
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'xyz65',
 	alias: ['xyz-d65'],
 
@@ -33,11 +34,12 @@ const definition = {
 	},
 
 	channels: ['x', 'y', 'z', 'alpha'],
+	difference: {},
 
 	interpolate: {
-		x: interpolatorLinear,
-		y: interpolatorLinear,
-		z: interpolatorLinear,
+		x: { use: interpolatorLinear },
+		y: { use: interpolatorLinear },
+		z: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	}
 };

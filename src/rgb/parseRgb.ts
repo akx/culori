@@ -4,8 +4,9 @@ import {
 	rgb_per_old,
 	rgb_per_new
 } from '../util/regex';
+import { RGBColor } from '../types';
 
-const parseRgb = color => {
+const parseRgb = (color: string): RGBColor | undefined => {
 	let match, res;
 
 	if ((match = color.match(rgb_num_old) || color.match(rgb_num_new))) {

@@ -4,13 +4,14 @@ import convertRgbToOklab from './convertRgbToOklab';
 import convertOklabToRgb from './convertOklabToRgb';
 
 import lab from '../lab/definition';
+import { ColorSpaceDefinition } from '../types';
 
 /*
 	Oklab, a perceptual color space for image processing by Björn Ottosson
 	Reference: https://bottosson.github.io/posts/oklab/
  */
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...lab,
 	mode: 'oklab',
 	alias: [],

@@ -6,7 +6,10 @@ const mapper = (fn, mode = 'rgb', preserve_mode = false) => {
 	let channels = mode ? getModeDefinition(mode).channels : null;
 	let conv = mode ? converter(mode) : prepare;
 	return color => {
-		let conv_color = conv(color);
+		const conv_color = conv(color);
+		if (!conv_color) {
+			throw new Error(`could not convert color ${color} to ${mode}`);
+		}
 		let res = (channels || getModeDefinition(color.mode).channels).reduce(
 			(res, ch) => {
 				let v = fn(conv_color[ch], ch, conv_color, mode);

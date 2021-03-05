@@ -9,8 +9,14 @@
  */
 
 import convertHsvToRgb from '../hsv/convertHsvToRgb';
+import { HWBAValues, RGBColor } from '../types';
 
-export default function convertHwbToRgb({ h, w, b, alpha }) {
+export default function convertHwbToRgb({
+	h,
+	w,
+	b,
+	alpha
+}: HWBAValues): RGBColor {
 	// normalize w + b to 1
 	if (w + b > 1) {
 		let s = w + b;
@@ -18,9 +24,9 @@ export default function convertHwbToRgb({ h, w, b, alpha }) {
 		b /= s;
 	}
 	return convertHsvToRgb({
-		h: h,
+		h,
 		s: b === 1 ? 1 : 1 - w / (1 - b),
 		v: 1 - b,
-		alpha: alpha
+		alpha
 	});
 }

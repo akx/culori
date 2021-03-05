@@ -7,12 +7,14 @@
 		* https://www.itu.int/rec/R-REC-BT.2020/en
 */
 
+import { Rec2020Color, XYZ65Color } from '../types';
+
 const α = 1.09929682680944;
 const β = 0.018053968510807;
 const gamma = v => (v > β ? α * Math.pow(v, 1 / 2.4) - (α - 1) : 4.5 * v);
 
-const convertXyz65ToRec2020 = ({ x, y, z, alpha }) => {
-	let res = {
+function convertXyz65ToRec2020({ x, y, z, alpha }: XYZ65Color): Rec2020Color {
+	let res: Rec2020Color = {
 		mode: 'rec2020',
 		r: gamma(
 			x * 1.7166511879712674 -
@@ -34,6 +36,6 @@ const convertXyz65ToRec2020 = ({ x, y, z, alpha }) => {
 		res.alpha = alpha;
 	}
 	return res;
-};
+}
 
 export default convertXyz65ToRec2020;

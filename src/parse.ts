@@ -1,13 +1,12 @@
 import { parsers } from './modes';
+import { Color } from './types';
 
-const parse = color => {
-	let result,
-		i = 0,
-		len = parsers.length;
-	while (i < len) {
-		if ((result = parsers[i++](color)) !== undefined) break;
+function parse(color: string): Color | undefined {
+	for (let i = 0; i < parsers.length; i++) {
+		let result = parsers[i](color);
+		if (result !== undefined) return result;
 	}
-	return result;
-};
+	return undefined;
+}
 
 export default parse;

@@ -18,8 +18,9 @@ import convertJabToRgb from './convertJabToRgb';
 
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'jab',
 	channels: ['j', 'a', 'b', 'alpha'],
 
@@ -38,11 +39,12 @@ const definition = {
 		a: [-0.108, 0.129],
 		b: [-0.185, 0.134]
 	},
+	difference: {},
 
 	interpolate: {
-		j: interpolatorLinear,
-		a: interpolatorLinear,
-		b: interpolatorLinear,
+		j: { use: interpolatorLinear },
+		a: { use: interpolatorLinear },
+		b: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	}
 };

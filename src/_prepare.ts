@@ -1,6 +1,8 @@
 import parse from './parse';
+import { Color } from './types';
 
-const prepare = (color, mode) =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const prepare = (color: any, mode?: string): Color | undefined =>
 	color === undefined
 		? undefined
 		: typeof color !== 'object'

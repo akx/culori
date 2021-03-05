@@ -1,6 +1,8 @@
 import normalizeHue from '../util/normalizeHue';
 
-const hue = (hues, fn) => {
+type HueArray = readonly (number | undefined)[];
+
+const hue = (hues: HueArray, fn: (n: number) => number) => {
 	return hues
 		.map((hue, idx, arr) => {
 			if (hue === undefined) {
@@ -12,30 +14,23 @@ const hue = (hues, fn) => {
 			}
 			return fn(normalized - normalizeHue(arr[idx - 1]));
 		})
-		.reduce((acc, curr) => {
-			if (
-				!acc.length ||
-				curr === undefined ||
-				acc[acc.length - 1] === undefined
-			) {
+		.reduce<(number | undefined)[]>((acc, curr) => {
+			const last = acc[acc.length - 1];
+			if (!acc.length || curr === undefined || last === undefined) {
 				acc.push(curr);
 				return acc;
 			}
-			acc.push(curr + acc[acc.length - 1]);
+			acc.push(curr + last);
 			return acc;
 		}, []);
 };
 
-const fixupHueShorter = arr =>
-	hue(arr, d => (Math.abs(d) <= 180 ? d : d - 360 * Math.sign(d)));
-const fixupHueLonger = arr =>
-	hue(arr, d => (Math.abs(d) >= 180 || d === 0 ? d : d - 360 * Math.sign(d)));
-const fixupHueIncreasing = arr => hue(arr, d => (d >= 0 ? d : d + 360));
-const fixupHueDecreasing = arr => hue(arr, d => (d <= 0 ? d : d - 360));
-
-export {
-	fixupHueShorter,
-	fixupHueLonger,
-	fixupHueIncreasing,
-	fixupHueDecreasing
-};
+let hueShorter = d => (Math.abs(d) <= 180 ? d : d - 360 * Math.sign(d));
+let hueLonger = d =>
+	Math.abs(d) >= 180 || d === 0 ? d : d - 360 * Math.sign(d);
+export const fixupHueShorter = (arr: HueArray) => hue(arr, hueShorter);
+export const fixupHueLonger = (arr: HueArray) => hue(arr, hueLonger);
+export const fixupHueIncreasing = (arr: HueArray) =>
+	hue(arr, d => (d >= 0 ? d : d + 360));
+export const fixupHueDecreasing = (arr: HueArray) =>
+	hue(arr, d => (d <= 0 ? d : d - 360));

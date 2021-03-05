@@ -1,8 +1,9 @@
 import converter from './converter';
 import round from './round';
 import fixup from './util/fixup';
+import { RGBColor } from './types';
 
-let rgb = converter('rgb');
+let rgb = converter<RGBColor>('rgb');
 let roundAlpha = round(2);
 
 const formatHex = c => {

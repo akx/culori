@@ -3,8 +3,9 @@ import convertP3ToXyz65 from './convertP3ToXyz65';
 import convertXyz65ToP3 from './convertXyz65ToP3';
 import convertRgbToXyz65 from '../xyz65/convertRgbToXyz65';
 import convertXyz65ToRgb from '../xyz65/convertXyz65ToRgb';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...rgb,
 	mode: 'p3',
 	alias: ['display-p3'],

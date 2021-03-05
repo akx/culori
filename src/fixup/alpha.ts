@@ -1,13 +1,13 @@
-const fixupAlpha = arr => {
+const fixupAlpha = (arr: readonly (number | undefined)[]): number[] => {
 	let some_defined = false;
-	let res = arr.map(v => {
+	let res: number[] = arr.map(v => {
 		if (v !== undefined) {
 			some_defined = true;
 			return v;
 		}
 		return 1;
 	});
-	return some_defined ? res : arr;
+	return some_defined ? res : (arr as number[]); // TODO: remove cast, make sound
 };
 
 export { fixupAlpha };

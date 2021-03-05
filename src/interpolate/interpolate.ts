@@ -2,42 +2,62 @@ import converter from '../converter';
 import { getModeDefinition } from '../modes';
 import normalizePositions from '../util/normalizePositions';
 import easingMidpoint from '../easing/midpoint';
-import { mapper, mapAlphaMultiply, mapAlphaDivide } from '../map';
+import { mapAlphaDivide, mapAlphaMultiply, mapper } from '../map';
+import { isfn, isnum } from '../utils';
+import { Color } from '../types';
 
-const isfn = o => typeof o === 'function';
-const isobj = o => o && typeof o === 'object';
-const isnum = o => typeof o === 'number';
+type InterpolateColorEntry = Color | number | Function;
 
-const interpolate_fn = (colors, mode = 'rgb', overrides, premap) => {
-	let def = getModeDefinition(mode);
+function prepareInterpolation(
+	mode: string,
+	colors: readonly InterpolateColorEntry[]
+) {
 	let conv = converter(mode);
 
-	let conv_colors = [];
-	let positions = [];
-	let fns = {};
+	let conv_colors: Color[] = [];
+	let positions: (number | undefined)[] = [];
+	let fns: Record<string, number | Function> = {};
 
 	colors.forEach(val => {
 		if (Array.isArray(val)) {
-			conv_colors.push(conv(val[0]));
-			positions.push(val[1]);
+			const [color, pos] = val;
+			const convColor = conv(color);
+			if (convColor === undefined)
+				throw new Error(`Could not convert color ${val[0]} to ${mode}`);
+			conv_colors.push(convColor);
+			positions.push(+pos);
 		} else if (isnum(val) || isfn(val)) {
 			// Color interpolation hint or easing function
 			fns[positions.length] = val;
 		} else {
-			conv_colors.push(conv(val));
+			const convColor = conv(val);
+			if (convColor === undefined)
+				throw new Error(`Could not convert color ${val[0]} to ${mode}`);
+			conv_colors.push(convColor);
 			positions.push(undefined);
 		}
 	});
 
-	normalizePositions(positions);
+	const normalizedPositions = normalizePositions(positions);
+	return { conv_colors, positions: normalizedPositions, fns };
+}
+
+const interpolate_fn = (
+	colors: readonly InterpolateColorEntry[],
+	mode = 'rgb',
+	overrides = {},
+	premap?
+) => {
+	let def = getModeDefinition(mode);
+	let { conv_colors, positions, fns } = prepareInterpolation(mode, colors);
 
 	// override the default interpolators
 	// from the color space definition with any custom ones
 	let fixed = def.channels.reduce((res, ch) => {
 		let ffn;
-		if (isobj(overrides) && isobj(overrides[ch]) && overrides[ch].fixup) {
+		if (overrides[ch]?.fixup) {
 			ffn = overrides[ch].fixup;
-		} else if (isobj(def.interpolate[ch]) && def.interpolate[ch].fixup) {
+		} else if (def.interpolate[ch]?.fixup) {
 			ffn = def.interpolate[ch].fixup;
 		} else {
 			ffn = v => v;
@@ -47,7 +67,7 @@ const interpolate_fn = (colors, mode = 'rgb', overrides, premap) => {
 	}, {});
 
 	if (premap) {
-		let ccolors = conv_colors.map((color, idx) => {
+		let ccolors = conv_colors.map((_color, idx) => {
 			return def.channels.reduce(
 				(c, ch) => {
 					c[ch] = fixed[ch][idx];
@@ -69,17 +89,13 @@ const interpolate_fn = (colors, mode = 'rgb', overrides, premap) => {
 		let ifn;
 		if (isfn(overrides)) {
 			ifn = overrides;
-		} else if (isobj(overrides) && isfn(overrides[ch])) {
+		} else if (isfn(overrides?.[ch])) {
 			ifn = overrides[ch];
-		} else if (
-			isobj(overrides) &&
-			isobj(overrides[ch]) &&
-			overrides[ch].use
-		) {
+		} else if (overrides[ch]?.use) {
 			ifn = overrides[ch].use;
 		} else if (isfn(def.interpolate[ch])) {
 			ifn = def.interpolate[ch];
-		} else if (isobj(def.interpolate[ch])) {
+		} else if (isfn(def.interpolate[ch]?.use)) {
 			ifn = def.interpolate[ch].use;
 		}
 
@@ -144,7 +160,7 @@ const interpolateWith = (premap, postmap) => (
 	mode = 'rgb',
 	overrides
 ) => {
-	let post = postmap ? mapper(postmap, mode) : undefined;
+	const post = postmap ? mapper(postmap, mode) : undefined;
 	let it = interpolate_fn(colors, mode, overrides, premap);
 	return post ? t => post(it(t)) : it;
 };

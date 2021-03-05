@@ -10,8 +10,9 @@ import { fixupAlpha } from '../fixup/alpha';
 import { interpolatorLinear } from '../interpolate/linear';
 import { differenceHueChroma } from '../difference';
 import { averageAngle } from '../average';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'dlch',
 
 	output: {
@@ -35,8 +36,8 @@ const definition = {
 	},
 
 	interpolate: {
-		l: interpolatorLinear,
-		c: interpolatorLinear,
+		l: { use: interpolatorLinear },
+		c: { use: interpolatorLinear },
 		h: {
 			use: interpolatorLinear,
 			fixup: fixupHueShorter

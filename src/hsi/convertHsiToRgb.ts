@@ -1,14 +1,22 @@
 import normalizeHue from '../util/normalizeHue';
+import { HSIAValues, RGBColor } from '../types';
 
 // Based on: https://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
 
-export default function convertHsiToRgb({ h, s, i, alpha }) {
+export default function convertHsiToRgb({
+	h,
+	s,
+	i,
+	alpha
+}: HSIAValues): RGBColor {
 	h = normalizeHue(h);
 	let f = Math.abs(((h / 60) % 2) - 1);
-	let res;
+	let res: RGBColor;
+	let mode = 'rgb' as const;
 	switch (Math.floor(h / 60)) {
 		case 0:
 			res = {
+				mode,
 				r: i * (1 + s * (3 / (2 - f) - 1)),
 				g: i * (1 + s * ((3 * (1 - f)) / (2 - f) - 1)),
 				b: i * (1 - s)
@@ -16,6 +24,7 @@ export default function convertHsiToRgb({ h, s, i, alpha }) {
 			break;
 		case 1:
 			res = {
+				mode,
 				r: i * (1 + s * ((3 * (1 - f)) / (2 - f) - 1)),
 				g: i * (1 + s * (3 / (2 - f) - 1)),
 				b: i * (1 - s)
@@ -23,6 +32,7 @@ export default function convertHsiToRgb({ h, s, i, alpha }) {
 			break;
 		case 2:
 			res = {
+				mode,
 				r: i * (1 - s),
 				g: i * (1 + s * (3 / (2 - f) - 1)),
 				b: i * (1 + s * ((3 * (1 - f)) / (2 - f) - 1))
@@ -30,6 +40,7 @@ export default function convertHsiToRgb({ h, s, i, alpha }) {
 			break;
 		case 3:
 			res = {
+				mode,
 				r: i * (1 - s),
 				g: i * (1 + s * ((3 * (1 - f)) / (2 - f) - 1)),
 				b: i * (1 + s * (3 / (2 - f) - 1))
@@ -37,6 +48,7 @@ export default function convertHsiToRgb({ h, s, i, alpha }) {
 			break;
 		case 4:
 			res = {
+				mode,
 				r: i * (1 + s * ((3 * (1 - f)) / (2 - f) - 1)),
 				g: i * (1 - s),
 				b: i * (1 + s * (3 / (2 - f) - 1))
@@ -44,16 +56,16 @@ export default function convertHsiToRgb({ h, s, i, alpha }) {
 			break;
 		case 5:
 			res = {
+				mode,
 				r: i * (1 + s * (3 / (2 - f) - 1)),
 				g: i * (1 - s),
 				b: i * (1 + s * ((3 * (1 - f)) / (2 - f) - 1))
 			};
 			break;
 		default:
-			res = { r: i * (1 - s), g: i * (1 - s), b: i * (1 - s) };
+			res = { mode, r: i * (1 - s), g: i * (1 - s), b: i * (1 - s) };
 	}
 
-	res.mode = 'rgb';
 	if (alpha !== undefined) res.alpha = alpha;
 	return res;
 }

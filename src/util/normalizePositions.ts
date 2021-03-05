@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /*
 	Normalize an array of color stop positions for a gradient
 	based on the rules defined in the CSS Images Module 4 spec:
@@ -11,7 +12,7 @@
 	Note: this method does not make a defensive copy of the array
 	it receives as argument. Instead, it adjusts the values in-place.
  */
-const normalizePositions = arr => {
+const normalizePositions = (arr: (number | undefined)[]): number[] => {
 	// 1. fix up first/last position if missing
 	if (arr[0] === undefined) {
 		arr[0] = 0;
@@ -36,18 +37,22 @@ const normalizePositions = arr => {
 			while (arr[j] === undefined) j++;
 
 			// ...and add evenly-spread positions
+			// @ts-ignore
 			inc = (arr[j] - from_pos) / (j - i + 1);
 			while (i < j) {
 				arr[i] = from_pos + (i + 1 - from_idx) * inc;
 				i++;
 			}
-		} else if (arr[i] < arr[i - 1]) {
-			// 3. make positions increase
-			arr[i] = arr[i - 1];
+		} else {
+			// @ts-ignore
+			if (arr[i] < arr[i - 1]) {
+				// 3. make positions increase
+				arr[i] = arr[i - 1];
+			}
 		}
 		i++;
 	}
-	return arr;
+	return arr as number[];
 };
 
 export default normalizePositions;

@@ -11,8 +11,9 @@
 import converter from './converter';
 import { getModeDefinition } from './modes';
 
-const BLENDS = {
-	normal: (b, s) => s,
+export type Blend = (b: number, s: number) => number;
+const BLENDS: Record<string, Blend> = {
+	normal: (_b, s) => s,
 	multiply: (b, s) => b * s,
 	screen: (b, s) => b + s - b * s,
 	'hard-light': (b, s) => (s < 0.5 ? b * 2 * s : 2 * s * (1 - b) - 1),
@@ -34,7 +35,7 @@ const BLENDS = {
 	exclusion: (b, s) => b + s - 2 * b * s
 };
 
-const blend = (colors, type = 'normal', mode = 'rgb') => {
+const blend = (colors, type: string | Blend = 'normal', mode = 'rgb') => {
 	let fn = typeof type === 'function' ? type : BLENDS[type];
 
 	let conv = converter(mode);
@@ -46,7 +47,7 @@ const blend = (colors, type = 'normal', mode = 'rgb') => {
 	// and assume undefined alphas are 1
 	let converted = colors.map(c => {
 		let cc = conv(c);
-		if (cc.alpha === undefined) {
+		if (cc && cc.alpha === undefined) {
 			cc.alpha = 1;
 		}
 		return cc;

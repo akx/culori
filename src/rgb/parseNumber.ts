@@ -1,5 +1,7 @@
-const parseNumber = (color, len) => {
-	if (typeof color !== 'number') return;
+import { RGBColor } from '../types';
+
+const parseNumber = (color: number, len: number): RGBColor | undefined => {
+	if (typeof color !== 'number') return undefined;
 
 	// hex3: #c93 -> #cc9933
 	if (len === 3) {
@@ -42,6 +44,7 @@ const parseNumber = (color, len) => {
 			alpha: (color & 0xff) / 255
 		};
 	}
+	return undefined;
 };
 
 export default parseNumber;

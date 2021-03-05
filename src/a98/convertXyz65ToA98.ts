@@ -6,10 +6,12 @@
 		* http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 */
 
+import { A98Color, XYZ65Color } from '../types';
+
 const gamma = v => Math.pow(Math.abs(v), 256 / 563) * Math.sign(v);
 
-const convertXyz65ToA98 = ({ x, y, z, alpha }) => {
-	let res = {
+const convertXyz65ToA98 = ({ x, y, z, alpha }: XYZ65Color): A98Color => {
+	let res: A98Color = {
 		mode: 'a98',
 		r: gamma(
 			x * 2.0415879038107465 -

@@ -1,8 +1,9 @@
 import converter from './converter';
 import prepare from './_prepare';
 import lerp from './interpolate/lerp';
+import { RGBColor } from './types';
 
-let rgb = converter('rgb');
+let rgb = converter<RGBColor>('rgb');
 
 /*
 	Color vision deficiency (CVD) simulation based on:
@@ -371,15 +372,17 @@ const deficiency = (lut, t) => {
 	let arr = lut[i];
 	if (w > 0 && i < lut.length - 1) {
 		let arr_2 = lut[i + 1];
-		arr = arr.map((v, idx) => lerp(arr[idx], arr_2[idx], w));
+		arr = arr.map((v, idx) => lerp(v, arr_2[idx], w));
 	}
 	return color => {
 		let c = prepare(color);
 		if (c === undefined) {
 			return undefined;
 		}
-		let { r, g, b } = rgb(c);
-		let ret = {
+		let converted = rgb(c);
+		if (!converted) throw new Error('Could not convert color to RGB');
+		let { r, g, b } = converted;
+		let ret: RGBColor = {
 			mode: 'rgb',
 			r: arr[0] * r + arr[1] * g + arr[2] * b,
 			g: arr[3] * r + arr[4] * g + arr[5] * b,

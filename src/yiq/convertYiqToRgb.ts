@@ -1,6 +1,7 @@
 import convertLrgbToRgb from '../lrgb/convertLrgbToRgb';
+import { YIQAValues } from '../types';
 
-const convertYiqToRgb = ({ y, i, q, alpha }) =>
+const convertYiqToRgb = ({ y, i, q, alpha }: YIQAValues) =>
 	convertLrgbToRgb({
 		r: y + 0.95608445 * i + 0.6208885 * q,
 		g: y - 0.27137664 * i - 0.6486059 * q,

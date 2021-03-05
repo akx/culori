@@ -2,6 +2,7 @@ import convertRgbToYiq from './convertRgbToYiq';
 import convertYiqToRgb from './convertYiqToRgb';
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
 /*
 	YIQ Color Space
@@ -23,7 +24,7 @@ import { fixupAlpha } from '../fixup/alpha';
 		http://www.progmat.uaem.mx:8080/artVol2Num2/Articulo3Vol2Num2.pdf
  */
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'yiq',
 
 	output: {
@@ -40,11 +41,12 @@ const definition = {
 		i: [-0.593, 0.593],
 		q: [-0.52, 0.52]
 	},
+	difference: {},
 
 	interpolate: {
-		y: interpolatorLinear,
-		i: interpolatorLinear,
-		q: interpolatorLinear,
+		y: { use: interpolatorLinear },
+		i: { use: interpolatorLinear },
+		q: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	}
 };

@@ -1,4 +1,4 @@
-export const hue = (val, unit) => {
+export const hue = (val: number, unit: string): number => {
 	switch (unit) {
 		case 'deg':
 			return +val;
@@ -9,4 +9,5 @@ export const hue = (val, unit) => {
 		case 'turn':
 			return val * 360;
 	}
+	throw new Error(`Invalid unit: ${unit}`);
 };

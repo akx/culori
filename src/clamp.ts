@@ -1,17 +1,19 @@
 import converter from './converter';
 import displayable from './displayable';
 import prepare from './_prepare';
+import { Color, RGBColor } from './types';
 
 let lch = converter('lch');
-let rgb = converter('rgb');
+let rgb = converter<RGBColor>('rgb');
 
-const fixup_rgb = color => {
+function fixup_rgb(color: Color): RGBColor {
 	let c = rgb(color);
+	if (!c) throw new Error(`Could not convert ${color} to RGB`);
 	c.r = Math.max(0, Math.min(c.r, 1));
 	c.g = Math.max(0, Math.min(c.g, 1));
 	c.b = Math.max(0, Math.min(c.b, 1));
 	return c;
-};
+}
 
 const clampRgb = color => {
 	color = prepare(color);
@@ -71,6 +73,8 @@ const clamp = (method = 'rgb') => {
 			return clampRgb;
 		case 'lch':
 			return clampChroma;
+		default:
+			throw new Error(`invalid method ${method}`);
 	}
 };
 

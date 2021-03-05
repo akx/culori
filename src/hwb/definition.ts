@@ -6,8 +6,9 @@ import { fixupAlpha } from '../fixup/alpha';
 import { interpolatorLinear } from '../interpolate/linear';
 import { differenceHueNaive } from '../difference';
 import { averageAngle } from '../average';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'hwb',
 
 	output: {
@@ -28,8 +29,8 @@ const definition = {
 
 	interpolate: {
 		h: { use: interpolatorLinear, fixup: fixupHueShorter },
-		w: interpolatorLinear,
-		b: interpolatorLinear,
+		w: { use: interpolatorLinear },
+		b: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	},
 

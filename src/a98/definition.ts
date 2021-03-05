@@ -4,8 +4,9 @@ import convertA98ToXyz65 from './convertA98ToXyz65';
 import convertXyz65ToA98 from './convertXyz65ToA98';
 import convertRgbToXyz65 from '../xyz65/convertRgbToXyz65';
 import convertXyz65ToRgb from '../xyz65/convertXyz65ToRgb';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...rgb,
 	mode: 'a98',
 	alias: ['a98-rgb'],

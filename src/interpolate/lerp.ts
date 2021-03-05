@@ -1,3 +1,3 @@
-const lerp = (a, b, t) => a + t * (b - a);
+const lerp = (a: number, b: number, t: number) => a + t * (b - a);
 
 export default lerp;

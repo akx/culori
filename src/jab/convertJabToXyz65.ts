@@ -1,3 +1,5 @@
+import { JABAValues, XYZ65Color } from '../types';
+
 const n = 0.1593017578125; // = 2610 / Math.pow(2, 14);
 const p = 134.03437499999998; // = 1.7 * 2523 / Math.pow(2, 5);
 const c1 = 0.8359375; // = 3424 / Math.pow(2, 12);
@@ -12,14 +14,14 @@ const pq_inv = v => {
 
 const rel = v => v / 203;
 
-const convertJabToXyz65 = ({ j, a, b, alpha }) => {
+const convertJabToXyz65 = ({ j, a, b, alpha }: JABAValues): XYZ65Color => {
 	let i = (j + d0) / (0.44 + 0.56 * (j + d0));
 
 	let l = pq_inv(i + 0.13860504 * a + 0.058047316 * b);
 	let m = pq_inv(i - 0.13860504 * a - 0.058047316 * b);
 	let s = pq_inv(i - 0.096019242 * a - 0.8118919 * b);
 
-	let res = {
+	let res: XYZ65Color = {
 		mode: 'xyz65',
 		x: rel(
 			1.661373024652174 * l -

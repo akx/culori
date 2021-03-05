@@ -5,7 +5,7 @@ const samples = (n = 2, γ = 1) => {
 	if (n < 2) {
 		return n < 1 ? [] : [ease(0.5)];
 	}
-	let res = [];
+	let res: number[] = [];
 	for (let i = 0; i < n; i++) {
 		res.push(ease(i / (n - 1)));
 	}

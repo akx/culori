@@ -1,27 +1,26 @@
-const converters = {};
-const modes = {};
-const parsers = [];
-const identity = v => v;
+import { Color, ColorParser, ColorSpaceDefinition } from './types';
+import { identity } from './utils';
 
-const defineMode = definition => {
-	converters[definition.mode] = Object.assign(
-		converters[definition.mode] || {},
-		definition.output
-	);
-	Object.keys(definition.input || {}).forEach(k => {
-		if (!converters[k]) {
-			converters[k] = {};
-		}
-		converters[k][definition.mode] = definition.input[k];
-	});
+const converters: Record<string, Record<string, any>> = {};
+const modes: Record<string, ColorSpaceDefinition> = {};
+const parsers: ColorParser<Color>[] = [];
 
-	// Color space channel ranges
-	if (!definition.ranges) {
-		definition.ranges = {};
+function assignConverter(
+	sourceMode: string,
+	targetMode: string,
+	converter: any
+) {
+	if (!converters[sourceMode]) converters[sourceMode] = {};
+	converters[sourceMode][targetMode] = converter;
+}
+
+function defineMode(definition: ColorSpaceDefinition) {
+	let mode = definition.mode;
+	for (let targetMode in definition.output) {
+		assignConverter(mode, targetMode, definition.output[targetMode]);
 	}
-
-	if (!definition.difference) {
-		definition.difference = {};
+	for (let sourceMode in definition.input) {
+		assignConverter(sourceMode, mode, definition.input[sourceMode]);
 	}
 
 	definition.channels.forEach(channel => {
@@ -34,21 +33,21 @@ const defineMode = definition => {
 			throw new Error(`Missing interpolator for: ${channel}`);
 		}
 
-		if (typeof definition.interpolate[channel] === 'function') {
-			definition.interpolate[channel] = {
-				use: definition.interpolate[channel]
-			};
-		}
-
 		if (!definition.interpolate[channel].fixup) {
 			definition.interpolate[channel].fixup = identity;
 		}
 	});
 
-	modes[definition.mode] = definition;
+	modes[mode] = definition;
 	(definition.parsers || []).forEach(parser => parsers.push(parser));
-};
+}
 
-const getModeDefinition = mode => modes[mode];
+function getModeDefinition(mode: string): ColorSpaceDefinition {
+	const def = modes[mode];
+	if (!def) {
+		throw new Error(`Color mode ${mode} is unknown`);
+	}
+	return def;
+}
 
 export { defineMode, getModeDefinition, converters, parsers };

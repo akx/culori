@@ -7,10 +7,11 @@
 */
 
 import convertRgbToLrgb from '../lrgb/convertRgbToLrgb';
+import { RGBColor, XYZ65Color } from '../types';
 
-const convertP3ToXyz65 = rgb => {
+const convertP3ToXyz65 = (rgb: RGBColor): XYZ65Color => {
 	let { r, g, b, alpha } = convertRgbToLrgb(rgb);
-	let res = {
+	let res: XYZ65Color = {
 		mode: 'xyz65',
 		x: 0.4865709 * r + 0.2656676 * g + 0.1982172 * b,
 		y: 0.2289745 * r + 0.6917385 * g + 0.0792869 * b,

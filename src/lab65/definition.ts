@@ -3,8 +3,9 @@ import convertLab65ToXyz65 from './convertLab65ToXyz65';
 import convertRgbToLab65 from './convertRgbToLab65';
 import convertXyz65ToLab65 from './convertXyz65ToLab65';
 import lab from '../lab/definition';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	...lab,
 	mode: 'lab65',
 	alias: ['lab-d65'],

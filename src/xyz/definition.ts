@@ -9,8 +9,9 @@ import convertRgbToXyz from './convertRgbToXyz';
 import convertLabToXyz from '../lab/convertLabToXyz';
 import { interpolatorLinear } from '../interpolate/linear';
 import { fixupAlpha } from '../fixup/alpha';
+import { ColorSpaceDefinition } from '../types';
 
-const definition = {
+const definition: ColorSpaceDefinition = {
 	mode: 'xyz',
 	alias: ['xyz-d50'],
 
@@ -31,11 +32,12 @@ const definition = {
 		y: [0, 0.997],
 		z: [0, 0.823]
 	},
+	difference: {},
 
 	interpolate: {
-		x: interpolatorLinear,
-		y: interpolatorLinear,
-		z: interpolatorLinear,
+		x: { use: interpolatorLinear },
+		y: { use: interpolatorLinear },
+		z: { use: interpolatorLinear },
 		alpha: { use: interpolatorLinear, fixup: fixupAlpha }
 	}
 };

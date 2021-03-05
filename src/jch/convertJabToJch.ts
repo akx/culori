@@ -1,15 +1,14 @@
 import normalizeHue from '../util/normalizeHue';
+import { JABAValues, JCHColor } from '../types';
 
-const convertJabToJch = ({ j, a, b, alpha }) => {
+const convertJabToJch = ({ j, a, b, alpha }: JABAValues): JCHColor => {
 	let c = Math.sqrt(a * a + b * b);
-	let res = {
+	let res: JCHColor = {
 		mode: 'jch',
 		j,
-		c
+		c,
+		h: c ? normalizeHue((Math.atan2(b, a) * 180) / Math.PI) : undefined
 	};
-	if (c) {
-		res.h = normalizeHue((Math.atan2(b, a) * 180) / Math.PI);
-	}
 	if (alpha !== undefined) {
 		res.alpha = alpha;
 	}

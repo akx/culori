@@ -27,6 +27,34 @@ import oklchDef from './oklch/definition';
 
 import { defineMode } from './modes';
 import converter from './converter';
+import {
+	A98Color,
+	CubehelixColor,
+	DLABColor,
+	DLCHColor,
+	HSIColor,
+	HSLColor,
+	HSVColor,
+	HWBColor,
+	JABColor,
+	JCHColor,
+	LAB65Color,
+	LABColor,
+	LCH65Color,
+	LCHColor,
+	LCHUVColor,
+	LRGBColor,
+	LUVColor,
+	OklabColor,
+	OklchColor,
+	P3Color,
+	ProphotoColor,
+	Rec2020Color,
+	RGBColor,
+	XYZ65Color,
+	XYZColor,
+	YIQColor
+} from './types';
 
 defineMode(a98Def);
 defineMode(cubehelixDef);
@@ -55,32 +83,32 @@ defineMode(yiqDef);
 defineMode(oklabDef);
 defineMode(oklchDef);
 
-let a98 = converter('a98');
-let cubehelix = converter('cubehelix');
-let dlab = converter('dlab');
-let dlch = converter('dlch');
-let hsi = converter('hsi');
-let hsl = converter('hsl');
-let hsv = converter('hsv');
-let hwb = converter('hwb');
-let jab = converter('jab');
-let jch = converter('jch');
-let lab = converter('lab');
-let lab65 = converter('lab65');
-let lch = converter('lch');
-let lch65 = converter('lch65');
-let lchuv = converter('lchuv');
-let lrgb = converter('lrgb');
-let luv = converter('luv');
-let p3 = converter('p3');
-let prophoto = converter('prophoto');
-let rec2020 = converter('rec2020');
-let rgb = converter('rgb');
-let xyz = converter('xyz');
-let xyz65 = converter('xyz65');
-let yiq = converter('yiq');
-let oklab = converter('oklab');
-let oklch = converter('oklch');
+let a98 = converter<A98Color>('a98');
+let cubehelix = converter<CubehelixColor>('cubehelix');
+let dlab = converter<DLABColor>('dlab');
+let dlch = converter<DLCHColor>('dlch');
+let hsi = converter<HSIColor>('hsi');
+let hsl = converter<HSLColor>('hsl');
+let hsv = converter<HSVColor>('hsv');
+let hwb = converter<HWBColor>('hwb');
+let jab = converter<JABColor>('jab');
+let jch = converter<JCHColor>('jch');
+let lab = converter<LABColor>('lab');
+let lab65 = converter<LAB65Color>('lab65');
+let lch = converter<LCHColor>('lch');
+let lch65 = converter<LCH65Color>('lch65');
+let lchuv = converter<LCHUVColor>('lchuv');
+let lrgb = converter<LRGBColor>('lrgb');
+let luv = converter<LUVColor>('luv');
+let p3 = converter<P3Color>('p3');
+let prophoto = converter<ProphotoColor>('prophoto');
+let rec2020 = converter<Rec2020Color>('rec2020');
+let rgb = converter<RGBColor>('rgb');
+let xyz = converter<XYZColor>('xyz');
+let xyz65 = converter<XYZ65Color>('xyz65');
+let yiq = converter<YIQColor>('yiq');
+let oklab = converter<OklabColor>('oklab');
+let oklch = converter<OklchColor>('oklch');
 
 export {
 	a98,

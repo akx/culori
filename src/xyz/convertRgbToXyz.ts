@@ -8,10 +8,11 @@
 */
 
 import convertRgbToLrgb from '../lrgb/convertRgbToLrgb';
+import { RGBAValues, XYZColor } from '../types';
 
-const convertRgbToXyz = rgb => {
+const convertRgbToXyz = (rgb: RGBAValues): XYZColor => {
 	let { r, g, b, alpha } = convertRgbToLrgb(rgb);
-	let res = {
+	let res: XYZColor = {
 		mode: 'xyz',
 		x: 0.4360747 * r + 0.3850649 * g + 0.1430804 * b,
 		y: 0.2225045 * r + 0.7168786 * g + 0.0606169 * b,

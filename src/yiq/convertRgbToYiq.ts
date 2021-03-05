@@ -1,8 +1,9 @@
 import convertRgbToLrgb from '../lrgb/convertRgbToLrgb';
+import { RGBColor, YIQColor } from '../types';
 
-const convertRgbToYiq = rgb => {
+const convertRgbToYiq = (rgb: RGBColor): YIQColor => {
 	let { r, g, b, alpha } = convertRgbToLrgb(rgb);
-	let res = {
+	let res: YIQColor = {
 		mode: 'yiq',
 		y: 0.29889531 * r + 0.58662247 * g + 0.11448223 * b,
 		i: 0.59597799 * r - 0.2741761 * g - 0.32180189 * b,

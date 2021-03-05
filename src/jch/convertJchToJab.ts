@@ -1,5 +1,7 @@
-const convertJchToJab = ({ j, c, h, alpha }) => {
-	let res = {
+import { JABColor } from '../types';
+
+const convertJchToJab = ({ j, c, h, alpha }): JABColor => {
+	let res: JABColor = {
 		mode: 'jab',
 		j,
 		a: c ? c * Math.cos((h / 180) * Math.PI) : 0,

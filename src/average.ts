@@ -1,7 +1,8 @@
 import converter from './converter';
 import { getModeDefinition } from './modes';
+import { isfn } from './utils';
 
-const averageAngle = val => {
+const averageAngle = (val: readonly number[]): number => {
 	// See: https://en.wikipedia.org/wiki/Mean_of_circular_quantities
 	let sum = val.reduce(
 		(sum, val) => {
@@ -17,12 +18,10 @@ const averageAngle = val => {
 	return (Math.atan2(sum.sin, sum.cos) * 180) / Math.PI;
 };
 
-const averageNumber = val => {
+const averageNumber = (val: number[]): number | undefined => {
 	let a = val.filter(v => v !== undefined);
 	return a.length ? a.reduce((sum, v) => sum + v, 0) / a.length : undefined;
 };
-
-const isfn = o => typeof o === 'function';
 
 function average(colors, mode = 'rgb', overrides) {
 	let def = getModeDefinition(mode);
